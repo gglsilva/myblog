@@ -1,6 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from .models import Post
 
-def home(request):
-    return HttpResponse('Hello World!')
+
+def post_list(request):
+    posts = Post.objects.all()
+
+    return render(request, 'blog/list.html', {'posts': posts})

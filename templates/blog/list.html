@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>
+        Blog Programador Sardinha
+    </h1>
+
+    {% for post in posts %}
+        <h2> {{ post.titulo }} </h2>          
+        <p>{{ post.resumo }}</p>
+        <p>
+            Publicado: {{ post.publicado }} por {{ post.autor }}
+        </p>
+    {% endfor %}
+{% endblock %}
