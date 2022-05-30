@@ -1,6 +1,46 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <h1>{{ post.titulo }}</h1>
-    <p>{{ post.conteudo }}</p>
+    <p id="date">
+        Publicado {{ post.publicado }} por {{ post.autor }}
+    </p>
+    <p>
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.image.name }}" />
+        {% endif %}
+    </p>
+    <p>
+        {{ post.conteudo }}
+    </p>
+
+    <!-- Compartilhar -->
+    <p>
+        <a href="{% url "blog:post_share" post.id %}">
+            Share this post
+        </a>
+    </p>
+
+    <!-- Comentarios -->
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Comentado {{ forloop.counter }} por {{ comment.nome }}
+                {{ comment.criado_em }}
+            </p>
+            {{ comment.conteudo|linebreaks }}
+        </div>
+    {% empty %}
+        <p>Ainda não há Comentarios aqui :(.</p>
+    {% endfor %}
+    {% if new_comment %}
+        <h2>Seu comentario foi Adicionado com sucesso, Aguardando aprovação.</h2>
+    {% else %}
+        <h2>Adicione um comentario</h2>
+        <form method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Adicionar Comentario"></p>
+        </form>
+    {% endif %}
 {% endblock %}

@@ -1,13 +1,37 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    
+    <!-- CSS do Projeto -->
+    <link rel="stylesheet" href="{% static 'blog/css/blog.css' %}">
+    {% block 'head' %}{% endblock %}
+    
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    
     <title>Programador Sardinha :.</title>
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
+    <div class="container-fluid">
+        <div id="content" >
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div id="sidebar">
+            <h2 class="title">
+                Blog Programador Sardinha
+            </h2>
+            <p>Meu blog feito em django</p>
+        </div>
+    </div>
+
 </body>
 </html>
