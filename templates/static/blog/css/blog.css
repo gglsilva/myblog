@@ -47,6 +47,12 @@ p.date {
     font-weight:bold;
 }
 
+/* similar posts */
+#similar-posts{
+    margin:20px 0 20px 0;   
+}
+
+
 /* forms */
 label { 
     float:left;

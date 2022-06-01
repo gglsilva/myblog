@@ -1,6 +1,7 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
+from taggit.managers import TaggableManager
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
@@ -21,6 +22,8 @@ class Post(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='rascunho')
+
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('-publicado',)
