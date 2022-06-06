@@ -1,11 +1,12 @@
-from hashlib import new
 from xml.etree.ElementTree import Comment
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from taggit.models import Tag
-from .forms import EmailPostForm, CommentForm
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import TrigramSimilarity
+from .forms import EmailPostForm, CommentForm, SearchForm
 from .models import Post
 from django.db.models import Count
 
@@ -85,3 +86,37 @@ def post_share(request, post_id):
     return render(request, 'blog/post/share.html', {'post': post,
                                                     'form': form,
                                                     'sent': sent})
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            #results = Post.objects.annotate(search=SearchVector('titulo', 'conteudo'),\
+            #                                ).filter(search=query)
+            #search_vector = SearchVector('titulo', 'conteudo') # Vetor de pesquisa "campos do post que serão pesquisados"
+            search_vector = SearchVector('titulo', weight='A') + SearchVector('conteudo', weight='B') # Vetor de pesquisa "campos do post que serão pesquisados" + pesquisa de peso
+            search_query = SearchQuery(query)
+            # Cria um SearchQuery(consulta) e filtra o resultado por ele e usar o SearchRank para ordenar os resultados por relevância
+            """
+            results = Post.objects.annotate(
+                                            search=search_vector,
+                                            rank=SearchRank(search_vector, search_query)
+                                            ).filter(search=search_query).order_by('-rank')
+            
+            # Filtra os resultados para exibir apenas os posts com uma classificação superior a 0.3
+            results = Post.objects.annotate(
+                                                rank=SearchRank(search_vector, search_query)
+                                                ).filter(rank__gte=0.3).order_by('-rank')
+            """
+            results = Post.objects.annotate(
+                                                similarity=TrigramSimilarity('titulo', query),
+                                                ).filter(similarity__gt=0.1).order_by('-similarity')
+
+    return render(request, 'blog/post/search.html', {'form': form,
+                                                    'query': query,
+                                                    'results': results})

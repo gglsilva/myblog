@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'taggit',
     'ckeditor',
     'ckeditor_uploader',
+    'django.contrib.postgres',
     # Local apps
     'blog.apps.BlogConfig',
 ]
@@ -88,7 +89,13 @@ DATABASES = {
     #    'ENGINE': 'django.db.backends.sqlite3',
     #    'NAME': BASE_DIR / 'db.sqlite3',
     #}
-    
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blog',
+        'USER': 'postgres',
+        'PASSWORD': 'Open466,2',
+        
+    }
 }
 
 

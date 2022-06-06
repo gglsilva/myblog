@@ -13,3 +13,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('nome', 'email', 'conteudo')
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()
