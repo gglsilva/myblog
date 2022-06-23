@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'django.contrib.postgres',
+    'easy_thumbnails',
     # Local apps
     'blog.apps.BlogConfig',
 ]

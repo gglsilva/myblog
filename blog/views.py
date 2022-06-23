@@ -19,7 +19,7 @@ def post_list(request, tag_slug=None):
         tag = get_object_or_404(Tag, slug=tag_slug)
         post_list = post_list.filter(tags__in=[tag])
 
-    paginator = Paginator(post_list, 3)
+    paginator = Paginator(post_list, 5)
     page = request.GET.get('page')
     try:
         posts = paginator.page(page)
@@ -27,7 +27,7 @@ def post_list(request, tag_slug=None):
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages) 
-    return render(request, 'blog/post/list.html', {'page': page,
+    return render(request, 'blog/list.html', {'page': page,
                                                    'posts': posts,
                                                    'tag': tag})
 
@@ -56,7 +56,7 @@ def post_detail(request, year, month, day, post):
                                   .exclude(id=post.id)
     similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
                                 .order_by('-same_tags','-publicado')[:4]
-    return render(request, 'blog/post/detail.html', {'post': post,
+    return render(request, 'blog/detail.html', {'post': post,
                                                     'comments': comments,
                                                     'new_comment': new_comment,
                                                     'comment_form': comment_form,
@@ -83,40 +83,18 @@ def post_share(request, post_id):
 
     else:
         form = EmailPostForm()
-    return render(request, 'blog/post/share.html', {'post': post,
+    return render(request, 'blog/share.html', {'post': post,
                                                     'form': form,
                                                     'sent': sent})
 
 
 def post_search(request):
-    form = SearchForm()
-    query = None
-    results = []
-    if 'query' in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            #results = Post.objects.annotate(search=SearchVector('titulo', 'conteudo'),\
-            #                                ).filter(search=query)
-            #search_vector = SearchVector('titulo', 'conteudo') # Vetor de pesquisa "campos do post que serão pesquisados"
-            search_vector = SearchVector('titulo', weight='A') + SearchVector('conteudo', weight='B') # Vetor de pesquisa "campos do post que serão pesquisados" + pesquisa de peso
-            search_query = SearchQuery(query)
-            # Cria um SearchQuery(consulta) e filtra o resultado por ele e usar o SearchRank para ordenar os resultados por relevância
-            """
-            results = Post.objects.annotate(
-                                            search=search_vector,
-                                            rank=SearchRank(search_vector, search_query)
-                                            ).filter(search=search_query).order_by('-rank')
-            
-            # Filtra os resultados para exibir apenas os posts com uma classificação superior a 0.3
-            results = Post.objects.annotate(
-                                                rank=SearchRank(search_vector, search_query)
-                                                ).filter(rank__gte=0.3).order_by('-rank')
-            """
-            results = Post.objects.annotate(
-                                                similarity=TrigramSimilarity('titulo', query),
-                                                ).filter(similarity__gt=0.1).order_by('-similarity')
+    query = request.GET.get('search')
+    search_vector = SearchVector('titulo', weight='A') + SearchVector('conteudo', weight='B') # Vetor de pesquisa "campos do post que serão pesquisados" + pesquisa de peso
+    search_query = SearchQuery(query)
+    results = Post.objects.annotate(
+                                    similarity=TrigramSimilarity('titulo', query),
+                                    ).filter(similarity__gt=0.1).order_by('-similarity')
 
-    return render(request, 'blog/post/search.html', {'form': form,
-                                                    'query': query,
-                                                    'results': results})
+    return render(request, 'blog/search_results.html', {'query': query,
+                                                'results': results})

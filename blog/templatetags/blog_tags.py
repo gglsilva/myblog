@@ -13,7 +13,7 @@ def total_posts():
     return Post.objects.count()
 
 
-@register.inclusion_tag('blog/post/latest_posts.html')
+@register.inclusion_tag('blog/latest_posts.html')
 def show_latest_posts(count=5):
     latest_posts = Post.objects.order_by('-publicado')[:count]
     return {'latest_posts': latest_posts}
@@ -25,12 +25,16 @@ def get_most_commented_posts(count=5):
         total_comments=Count('comments')
         ).order_by('-total_comments')[:count]
 
-
-@register.inclusion_tag('blog/post/posts_tags.html')
+"""
+@register.inclusion_tag('blog/posts_tags.html')
 def show_posts_tags():
     tags = Tag.objects.all()
     return {'tags': tags}
-
+"""
+@register.simple_tag
+def show_posts_tags():
+    tags = Tag.objects.all()
+    return tags
 
 @register.filter(name='markdown')
 def markdown_format(text):
