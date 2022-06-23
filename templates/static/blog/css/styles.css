@@ -6,6 +6,10 @@
   font-family: 'Lato', sans-serif;
 }
 
+.bg-secondary-color{
+  background-color:#051926;
+}
+
 .secondary-color{
   color:#fff;
 }
@@ -282,6 +286,37 @@ input[type="submit"]:hover {
     bottom: 7em;
   }
 }
+
+/* INFO */
+#info-content {
+  margin-bottom: 4em;
+  padding: 4em 1em;
+}
+
+#Infor-title{
+  margin-top: 2em;
+}
+
+#info-numbers {
+  margin: 1.5em 0;
+}
+
+#info-banner {
+  align-items: center;
+  display: flex;
+  margin-bottom: 2.5em;
+}
+
+#info-numbers h3 {
+  font-size: 3em;
+}
+
+@media (min-width: 768px) {
+  #info-content {
+    padding: 3.5em;
+  }
+}
+
 
 /* FOOTER */
 
